@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
@@ -206,8 +207,36 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
                     EasyFloat.dismiss()
                 }
+                val contentLayout = it.findViewById<RelativeLayout>(R.id.rlContent)
+                Toast.makeText(this, "onClick contentLayout=$contentLayout", Toast.LENGTH_SHORT).show()
                 it.findViewById<TextView>(R.id.tvOpenMain).setOnClickListener {
-                    startActivity<MainActivity>(this)
+                    //startActivity<MainActivity>(this)
+                    //EasyFloat.getFloatView()?.layoutParams?.height = 500
+                    Toast.makeText(this, "onClick", Toast.LENGTH_SHORT).show()
+
+                    EasyFloat.updateFloat(height = 500)
+
+                    val layoutParams = EasyFloat.getFloatView()?.layoutParams
+                    layoutParams?.height = 500
+                    Toast.makeText(this, "onClick layoutParams=$layoutParams", Toast.LENGTH_SHORT).show()
+                    contentLayout.invalidate() //刷新 View params？
+
+                    contentLayout.setBackgroundColor( //更新的是 float_app.xml对应的背景
+                        applicationContext.resources.getColor(
+                            android.R.color.holo_red_light,
+                            null
+                        )
+                    )
+                    contentLayout.parent?.let { viewParent -> //更新它的父布局（ParentFrameLayout），也即window的大小
+                        (viewParent as ViewGroup).setBackgroundColor(
+                            applicationContext.resources.getColor(
+                                android.R.color.holo_green_light,
+                                null
+                            )
+                        )
+                    }
+
+                    Toast.makeText(this, "invalidate", Toast.LENGTH_SHORT).show()
                 }
                 it.findViewById<CheckBox>(R.id.checkbox)
                     .setOnCheckedChangeListener { _, isChecked -> EasyFloat.dragEnable(isChecked) }
